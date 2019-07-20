@@ -22,6 +22,16 @@
             return _impl.AddU64Field(fieldName, options._impl);
         }
 
+        public uint AddI64Field(string fieldName, IntOptions options)
+        {
+            return _impl.AddI64Field(fieldName, options._impl);
+        }
+
+        public uint AddDateField(string fieldName, IntOptions options)
+        {
+            return _impl.AddDateField(fieldName, options._impl);
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

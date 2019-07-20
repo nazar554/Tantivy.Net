@@ -3,10 +3,10 @@
     using System;
     using System.Diagnostics;
 
-    public static class EnumHelper
+    internal static class EnumHelper
     {
         public static T VerifyEnum<T>(T value)
-            where T : Enum
+            where T : struct, Enum
         {
 #if DEBUG
             Debug.Assert(Enum.IsDefined(typeof(T), value));

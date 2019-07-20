@@ -23,5 +23,27 @@
                 Assert.NotEqual(field1, field2);
             }
         }
+
+        [Fact]
+        public void AddI64FieldWorks()
+        {
+            using (var builder = new SchemaBuilder())
+            {
+                uint field1 = builder.AddI64Field("test1", new IntOptions());
+                uint field2 = builder.AddI64Field("test2", new IntOptions());
+                Assert.NotEqual(field1, field2);
+            }
+        }
+
+        [Fact]
+        public void AddDateFieldWorks()
+        {
+            using (var builder = new SchemaBuilder())
+            {
+                uint field1 = builder.AddDateField("test1", new IntOptions());
+                uint field2 = builder.AddDateField("test2", new IntOptions());
+                Assert.NotEqual(field1, field2);
+            }
+        }
     }
 }

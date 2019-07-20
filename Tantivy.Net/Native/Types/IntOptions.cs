@@ -7,8 +7,11 @@
 
     internal sealed class IntOptions : Abstract.SafeHandleZeroIsInvalid
     {
+        private readonly object _syncRoot;
+
         private IntOptions()
         {
+            _syncRoot = new object();
         }
 
         protected override bool ReleaseHandle()
@@ -19,11 +22,23 @@
 
         public bool IsStored => IsStoredImpl(this);
 
-        public void SetStored() => SetStoredImpl(this);
+        public void SetStored()
+        {
+            lock (_syncRoot)
+            {
+                SetStoredImpl(this);
+            }
+        }
 
         public bool IsIndexed => IsIndexedImpl(this);
 
-        public void SetIndexed() => SetIndexedImpl(this);
+        public void SetIndexed()
+        {
+            lock (_syncRoot)
+            {
+                SetIndexedImpl(this);
+            }
+        }
 
         public bool IsFast => IsFastImpl(this);
 
@@ -33,7 +48,11 @@
             {
                 throw new ArgumentOutOfRangeException(nameof(cardinality));
             }
-            SetFastImpl(this, (int)cardinality + 1);
+
+            lock (_syncRoot)
+            {
+                SetFastImpl(this, (int)cardinality + 1);
+            }
         }
 
         public Cardinality? FastCardinality
