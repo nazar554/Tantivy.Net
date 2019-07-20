@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29102.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tantivy.Net", "Tantivy.Net\Tantivy.Net.csproj", "{3F304637-660A-472F-8E7C-3224581F8172}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tantivy.Net.Tests", "Tantivy.Net.Tests\Tantivy.Net.Tests.csproj", "{E91819A8-D60E-4E6D-AE54-B3952D047218}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3F304637-660A-472F-8E7C-3224581F8172}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F304637-660A-472F-8E7C-3224581F8172}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F304637-660A-472F-8E7C-3224581F8172}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F304637-660A-472F-8E7C-3224581F8172}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E91819A8-D60E-4E6D-AE54-B3952D047218}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E91819A8-D60E-4E6D-AE54-B3952D047218}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E91819A8-D60E-4E6D-AE54-B3952D047218}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E91819A8-D60E-4E6D-AE54-B3952D047218}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {45C16A0A-09B9-433D-B707-8CF0A3E8816C}
+	EndGlobalSection
+EndGlobal
