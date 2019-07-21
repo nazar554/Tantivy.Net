@@ -45,5 +45,27 @@
                 Assert.NotEqual(field1, field2);
             }
         }
+
+        [Fact]
+        public void AddFacetFieldWorks()
+        {
+            using (var builder = new SchemaBuilder())
+            {
+                uint field1 = builder.AddFacetField("test1");
+                uint field2 = builder.AddFacetField("test2");
+                Assert.NotEqual(field1, field2);
+            }
+        }
+
+        [Fact]
+        public void AddBytesFieldWorks()
+        {
+            using (var builder = new SchemaBuilder())
+            {
+                uint field1 = builder.AddBytesField("test1");
+                uint field2 = builder.AddBytesField("test2");
+                Assert.NotEqual(field1, field2);
+            }
+        }
     }
 }

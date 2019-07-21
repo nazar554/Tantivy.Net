@@ -6,11 +6,8 @@
 
     internal sealed class SchemaBuilder : Abstract.SafeHandleZeroIsInvalid
     {
-        private readonly object _syncRoot;
-
         private SchemaBuilder()
         {
-            _syncRoot = new object();
         }
 
         protected override bool ReleaseHandle()
@@ -23,7 +20,7 @@
         {
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
-                lock (_syncRoot)
+                lock (this)
                 {
                     return AddU64FieldImpl(this, ptr, length, options);
                 }
@@ -34,7 +31,7 @@
         {
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
-                lock (_syncRoot)
+                lock (this)
                 {
                     return AddI64FieldImpl(this, ptr, length, options);
                 }
@@ -45,9 +42,31 @@
         {
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
-                lock (_syncRoot)
+                lock (this)
                 {
                     return AddDateFieldImpl(this, ptr, length, options);
+                }
+            });
+        }
+
+        public uint AddFacetField(string fieldName)
+        {
+            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            {
+                lock (this)
+                {
+                    return AddFacetFieldImpl(this, ptr, length);
+                }
+            });
+        }
+
+        public uint AddBytesField(string fieldName)
+        {
+            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            {
+                lock (this)
+                {
+                    return AddBytesFieldImpl(this, ptr, length);
                 }
             });
         }
@@ -70,5 +89,11 @@
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_date_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static unsafe extern uint AddDateFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_facet_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static unsafe extern uint AddFacetFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_bytes_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static unsafe extern uint AddBytesFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
     }
 }

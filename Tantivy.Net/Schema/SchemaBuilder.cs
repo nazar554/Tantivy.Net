@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class SchemaBuilder : IDisposable
+    public class SchemaBuilder : Abstract.DisposableBase
     {
         internal readonly Native.Types.SchemaBuilder _impl;
 
@@ -11,28 +11,32 @@
             _impl = Native.Types.SchemaBuilder.Create();
         }
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        public uint AddU64Field(string fieldName, IntOptions options)
+        public virtual uint AddU64Field(string fieldName, IntOptions options)
         {
             return _impl.AddU64Field(fieldName, options._impl);
         }
 
-        public uint AddI64Field(string fieldName, IntOptions options)
+        public virtual uint AddI64Field(string fieldName, IntOptions options)
         {
             return _impl.AddI64Field(fieldName, options._impl);
         }
 
-        public uint AddDateField(string fieldName, IntOptions options)
+        public virtual uint AddDateField(string fieldName, IntOptions options)
         {
             return _impl.AddDateField(fieldName, options._impl);
         }
 
-        protected virtual void Dispose(bool disposing)
+        public virtual uint AddFacetField(string fieldName)
+        {
+            return _impl.AddFacetField(fieldName);
+        }
+
+        public virtual uint AddBytesField(string fieldName)
+        {
+            return _impl.AddBytesField(fieldName);
+        }
+
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {

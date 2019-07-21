@@ -13,6 +13,10 @@
         {
         }
 
+        protected SafeHandleZeroIsInvalid(IntPtr handle, bool ownsHandle) : base(handle, ownsHandle)
+        {
+        }
+
         public override bool IsInvalid => handle == IntPtr.Zero;
     }
 }

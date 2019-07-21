@@ -7,11 +7,8 @@
 
     internal sealed class IntOptions : Abstract.SafeHandleZeroIsInvalid
     {
-        private readonly object _syncRoot;
-
         private IntOptions()
         {
-            _syncRoot = new object();
         }
 
         protected override bool ReleaseHandle()
@@ -24,7 +21,7 @@
 
         public void SetStored()
         {
-            lock (_syncRoot)
+            lock (this)
             {
                 SetStoredImpl(this);
             }
@@ -34,7 +31,7 @@
 
         public void SetIndexed()
         {
-            lock (_syncRoot)
+            lock (this)
             {
                 SetIndexedImpl(this);
             }
@@ -49,7 +46,7 @@
                 throw new ArgumentOutOfRangeException(nameof(cardinality));
             }
 
-            lock (_syncRoot)
+            lock (this)
             {
                 SetFastImpl(this, (int)cardinality + 1);
             }

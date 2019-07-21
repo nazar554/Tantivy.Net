@@ -19,7 +19,7 @@
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            return count <= 128 * 1024
+            return count < 100
                 ? Utf8CallStackAlloc(value, count, action)
                 : Utf8CallArrayPool(value, count, action, clearArray);
         }
