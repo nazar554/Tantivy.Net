@@ -36,6 +36,11 @@
             return _impl.AddBytesField(fieldName);
         }
 
+        public uint AddTextField(string fieldName, TextOptions options)
+        {
+            return _impl.AddTextField(fieldName, options._impl);
+        }
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

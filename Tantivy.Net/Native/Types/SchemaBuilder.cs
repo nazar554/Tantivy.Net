@@ -71,6 +71,17 @@
             });
         }
 
+        public uint AddTextField(string fieldName, TextOptions options)
+        {
+            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            {
+                lock (this)
+                {
+                    return AddTextFieldImpl(this, ptr, length, options);
+                }
+            });
+        }
+
         /****************************************************************/
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_new_schema_builder", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -95,5 +106,8 @@
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_bytes_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static unsafe extern uint AddBytesFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_text_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static unsafe extern uint AddTextFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, TextOptions options);
     }
 }
