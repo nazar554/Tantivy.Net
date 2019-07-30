@@ -11,13 +11,29 @@
 
         protected override bool ReleaseHandle()
         {
+            if (_cachedIndexingOptions != null)
+            {
+                _cachedIndexingOptions.SetHandleAsInvalid();
+            }
             Destroy(handle);
             return true;
         }
 
+        private TextFieldIndexing _cachedIndexingOptions;
+
         public TextFieldIndexing IndexingOptions
         {
-            get => new TextFieldIndexing(GetIndexingOptionsImpl(this));
+            get
+            {
+                lock (this)
+                {
+                    if (_cachedIndexingOptions == null)
+                    {
+                        _cachedIndexingOptions = new TextFieldIndexing(GetIndexingOptionsImpl(this));
+                    }
+                    return _cachedIndexingOptions;
+                }
+            }
             set
             {
                 if (value == null)
@@ -27,6 +43,11 @@
                 lock (this)
                 {
                     SetIndexingOptionsImpl(this, value);
+                    if (_cachedIndexingOptions != null)
+                    {
+                        _cachedIndexingOptions.SetHandleAsInvalid();
+                        _cachedIndexingOptions = null;
+                    }
                 }
             }
         }

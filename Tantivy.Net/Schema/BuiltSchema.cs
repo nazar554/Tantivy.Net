@@ -11,6 +11,8 @@
             _impl = impl ?? throw new ArgumentNullException(nameof(impl));
         }
 
+        public string GetFieldName(uint field) => _impl.GetFieldName(field);
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

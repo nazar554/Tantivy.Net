@@ -87,11 +87,13 @@
             using (var builder = new SchemaBuilder())
             using (var options = new TextOptions())
             {
-                uint field1 = builder.AddFacetField("test1");
+                uint field1 = builder.AddFacetField(nameof(field1));
                 uint field2 = builder.AddTextField("test2", options);
                 Assert.NotEqual(field1, field2);
 
-                Assert.NotNull(builder.Build());
+                var schema = builder.Build();
+                Assert.NotNull(schema);
+                Assert.Equal(nameof(field1), schema.GetFieldName(field1));
 
                 Assert.Throws<ObjectDisposedException>(() => builder.AddFacetField("test3"));
             }
