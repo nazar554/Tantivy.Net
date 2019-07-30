@@ -82,6 +82,16 @@
             });
         }
 
+        public BuiltSchema Build()
+        {
+            lock (this)
+            {
+                var schema = BuildImpl(this);
+                SetHandleAsInvalid();
+                return schema;
+            }
+        }
+
         /****************************************************************/
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_new_schema_builder", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
@@ -93,21 +103,24 @@
         /****************************************************************/
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_u64_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddU64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern uint AddU64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_i64_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddI64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern uint AddI64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_date_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddDateFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern uint AddDateFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_facet_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddFacetFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+        private static extern uint AddFacetFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_bytes_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddBytesFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+        private static extern uint AddBytesFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_text_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern uint AddTextFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, TextOptions options);
+        private static extern uint AddTextFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, TextOptions options);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_build", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern BuiltSchema BuildImpl(SchemaBuilder builder);
     }
 }

@@ -1,7 +1,5 @@
 ﻿namespace Tantivy.Net.Schema
 {
-    using System;
-
     public class SchemaBuilder : Abstract.DisposableBase
     {
         internal readonly Native.Types.SchemaBuilder _impl;
@@ -39,6 +37,12 @@
         public uint AddTextField(string fieldName, TextOptions options)
         {
             return _impl.AddTextField(fieldName, options._impl);
+        }
+
+        public BuiltSchema Build()
+        {
+            var schema = _impl.Build();
+            return new BuiltSchema(schema);
         }
 
         protected override void Dispose(bool disposing)

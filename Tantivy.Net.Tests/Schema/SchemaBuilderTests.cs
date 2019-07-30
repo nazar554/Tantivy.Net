@@ -1,5 +1,6 @@
 ﻿namespace Tantivy.Net.Tests.Schema
 {
+    using System;
     using Tantivy.Net.Schema;
     using Xunit;
 
@@ -77,6 +78,22 @@
                 uint field1 = builder.AddTextField("test1", options);
                 uint field2 = builder.AddTextField("test2", options);
                 Assert.NotEqual(field1, field2);
+            }
+        }
+
+        [Fact]
+        public void BuildWorks()
+        {
+            using (var builder = new SchemaBuilder())
+            using (var options = new TextOptions())
+            {
+                uint field1 = builder.AddFacetField("test1");
+                uint field2 = builder.AddTextField("test2", options);
+                Assert.NotEqual(field1, field2);
+
+                Assert.NotNull(builder.Build());
+
+                Assert.Throws<ObjectDisposedException>(() => builder.AddFacetField("test3"));
             }
         }
     }
