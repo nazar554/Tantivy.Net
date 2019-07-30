@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.InteropServices;
 
-    internal sealed class BuiltSchema : Abstract.SafeHandleZeroIsInvalid
+    internal sealed class BuiltSchema : Abstract.SafeHandleZeroIsInvalid<BuiltSchema>
     {
         private BuiltSchema()
         {

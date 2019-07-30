@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.InteropServices;
 
-    internal sealed class TextOptions : Abstract.SafeHandleZeroIsInvalid
+    internal sealed class TextOptions : Abstract.SafeHandleZeroIsInvalid<TextOptions>
     {
         private TextOptions()
         {
@@ -18,7 +18,17 @@
         public TextFieldIndexing IndexingOptions
         {
             get => new TextFieldIndexing(GetIndexingOptionsImpl(this));
-            set => SetIndexingOptionsImpl(this, value);
+            set
+            {
+                if (value == null)
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+                lock (this)
+                {
+                    SetIndexingOptionsImpl(this, value);
+                }
+            }
         }
 
         public bool IsStored => IsStoredImpl(this);

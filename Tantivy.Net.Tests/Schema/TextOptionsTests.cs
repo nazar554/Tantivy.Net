@@ -15,5 +15,14 @@
             }
         }
 
+
+        [Fact]
+        public void SetIndexingOptionsWorks()
+        {
+            using (var builder = new TextOptions())
+            {
+                builder.IndexingOptions = new TextFieldIndexing();
+            }
+        }
     }
 }

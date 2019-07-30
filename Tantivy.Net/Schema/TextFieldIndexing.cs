@@ -17,9 +17,9 @@
             _impl = Native.Types.TextFieldIndexing.Create();
         }
 
-        public virtual TextOptions TextOptions { get; }
+        public TextOptions TextOptions { get; }
 
-        public virtual bool IsReadOnly => _impl.IsReadOnly;
+        public bool IsReadOnly => _impl.IsReadOnly;
 
         protected override void Dispose(bool disposing)
         {

@@ -17,6 +17,11 @@
                 throw new ArgumentNullException(nameof(action));
             }
 
+            if (value.Length == 0)
+            {
+                return action(IntPtr.Zero, UIntPtr.Zero);
+            }
+
             int count = Encoding.UTF8.GetByteCount(value);
 
             return count < 100

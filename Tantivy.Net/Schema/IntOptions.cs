@@ -9,27 +9,27 @@
             _impl = Native.Types.IntOptions.Create();
         }
 
-        public virtual bool IsStored => _impl.IsStored;
+        public bool IsStored => _impl.IsStored;
 
-        public virtual bool IsFast => _impl.IsFast;
+        public bool IsFast => _impl.IsFast;
 
-        public virtual bool IsIndexed => _impl.IsIndexed;
+        public bool IsIndexed => _impl.IsIndexed;
 
-        public virtual Cardinality? FastCardinality => _impl.FastCardinality;
+        public Cardinality? FastFieldCardinality => _impl.FastFieldCardinality;
 
-        public virtual IntOptions Stored()
+        public IntOptions Stored()
         {
             _impl.SetStored();
             return this;
         }
 
-        public virtual IntOptions Indexed()
+        public IntOptions Indexed()
         {
             _impl.SetIndexed();
             return this;
         }
 
-        public virtual IntOptions Fast(Cardinality cardinality)
+        public IntOptions Fast(Cardinality cardinality)
         {
             _impl.SetFast(cardinality);
             return this;
@@ -42,5 +42,9 @@
                 _impl.Dispose();
             }
         }
+
+        public override int GetHashCode() => _impl.GetHashCode();
+
+        public override bool Equals(object obj) => _impl.Equals((obj as IntOptions)?._impl);
     }
 }

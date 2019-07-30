@@ -3,8 +3,12 @@
     using System;
     using System.Runtime.InteropServices;
 
-    internal sealed class TextFieldIndexing : Abstract.SafeHandleZeroIsInvalid
+    internal sealed class TextFieldIndexing : Abstract.SafeHandleZeroIsInvalid<TextFieldIndexing>
     {
+        private TextFieldIndexing()
+        {
+        }
+
         public TextFieldIndexing(IntPtr handle) : base(handle, false)
         {
             IsReadOnly = true;

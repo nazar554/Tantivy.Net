@@ -4,7 +4,7 @@
     using System.Runtime.InteropServices;
     using Helpers;
 
-    internal sealed class SchemaBuilder : Abstract.SafeHandleZeroIsInvalid
+    internal sealed class SchemaBuilder : Abstract.SafeHandleZeroIsInvalid<SchemaBuilder>
     {
         private SchemaBuilder()
         {

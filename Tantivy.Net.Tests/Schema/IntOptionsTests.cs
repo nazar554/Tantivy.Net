@@ -12,7 +12,7 @@
             {
                 Assert.False(builder.IsStored);
                 Assert.False(builder.IsFast);
-                Assert.Null(builder.FastCardinality);
+                Assert.Null(builder.FastFieldCardinality);
                 Assert.False(builder.IsIndexed);
             }
         }
@@ -24,7 +24,7 @@
             {
                 Assert.True(builder.IsStored);
                 Assert.False(builder.IsFast);
-                Assert.Null(builder.FastCardinality);
+                Assert.Null(builder.FastFieldCardinality);
                 Assert.False(builder.IsIndexed);
             }
         }
@@ -36,7 +36,7 @@
             {
                 Assert.True(builder.IsIndexed);
                 Assert.False(builder.IsFast);
-                Assert.Null(builder.FastCardinality);
+                Assert.Null(builder.FastFieldCardinality);
                 Assert.False(builder.IsStored);
             }
         }
@@ -50,7 +50,7 @@
             {
                 Assert.False(builder.IsIndexed);
                 Assert.True(builder.IsFast);
-                Assert.Equal(cardinality, builder.FastCardinality);
+                Assert.Equal(cardinality, builder.FastFieldCardinality);
                 Assert.False(builder.IsStored);
             }
         }

@@ -4,10 +4,16 @@
 
     public abstract class DisposableBase : IDisposable
     {
+        private bool _disposed;
+
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            if (!_disposed)
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+                _disposed = true;
+            }
         }
 
         protected abstract void Dispose(bool disposing);

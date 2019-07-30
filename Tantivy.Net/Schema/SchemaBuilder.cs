@@ -11,27 +11,27 @@
             _impl = Native.Types.SchemaBuilder.Create();
         }
 
-        public virtual uint AddU64Field(string fieldName, IntOptions options)
+        public uint AddU64Field(string fieldName, IntOptions options)
         {
             return _impl.AddU64Field(fieldName, options._impl);
         }
 
-        public virtual uint AddI64Field(string fieldName, IntOptions options)
+        public uint AddI64Field(string fieldName, IntOptions options)
         {
             return _impl.AddI64Field(fieldName, options._impl);
         }
 
-        public virtual uint AddDateField(string fieldName, IntOptions options)
+        public uint AddDateField(string fieldName, IntOptions options)
         {
             return _impl.AddDateField(fieldName, options._impl);
         }
 
-        public virtual uint AddFacetField(string fieldName)
+        public uint AddFacetField(string fieldName)
         {
             return _impl.AddFacetField(fieldName);
         }
 
-        public virtual uint AddBytesField(string fieldName)
+        public uint AddBytesField(string fieldName)
         {
             return _impl.AddBytesField(fieldName);
         }

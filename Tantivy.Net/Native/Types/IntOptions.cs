@@ -5,7 +5,7 @@
     using Helpers;
     using Schema;
 
-    internal sealed class IntOptions : Abstract.SafeHandleZeroIsInvalid
+    internal sealed class IntOptions : Abstract.SafeHandleZeroIsInvalid<IntOptions>
     {
         private IntOptions()
         {
@@ -52,11 +52,11 @@
             }
         }
 
-        public Cardinality? FastCardinality
+        public Cardinality? FastFieldCardinality
         {
             get
             {
-                int value = GetFastCardinalityImpl(this);
+                int value = GetFastFieldCardinalityImpl(this);
                 return value == 0 ? (Cardinality?)null : EnumHelper.VerifyEnum((Cardinality)(value - 1));
             }
         }
@@ -97,7 +97,7 @@
         private static extern void SetFastImpl(IntOptions options, int cardinality);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_int_options_get_fastfield_cardinality", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern int GetFastCardinalityImpl(IntOptions options);
+        private static extern int GetFastFieldCardinalityImpl(IntOptions options);
 
         /****************************************************************/
     }
