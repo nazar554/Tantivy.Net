@@ -1,4 +1,4 @@
-﻿namespace Tantivy.Net.Schema.Abstract
+﻿namespace Tantivy.Net.Abstract
 {
     using System;
 
