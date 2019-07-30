@@ -19,6 +19,18 @@
 
         public TextOptions TextOptions { get; }
 
+        public string Tokenizer
+        {
+            get => _impl.Tokenizer;
+            set => _impl.Tokenizer = value;
+        }
+
+        public IndexRecordOption IndexRecordOptions
+        {
+            get => _impl.IndexRecordOptions;
+            set => _impl.IndexRecordOptions = value;
+        }
+
         public bool IsReadOnly => _impl.IsReadOnly;
 
         protected override void Dispose(bool disposing)
