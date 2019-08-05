@@ -13,13 +13,34 @@
 
         public static Index CreateInRam(Schema.BuiltSchema schema)
         {
+            EnsureSchemaNotNull(schema);
+
+            var index = Native.Types.Index.CreateInRam(schema._impl);
+            return new Index(index);
+        }
+
+        public static Index CreateInDir(string path, Schema.BuiltSchema schema)
+        {
+            EnsureSchemaNotNull(schema);
+
+            var index = Native.Types.Index.CreateInDir(path, schema._impl);
+            return new Index(index);
+        }
+
+        public static Index CreateFromTempDir(Schema.BuiltSchema schema)
+        {
+            EnsureSchemaNotNull(schema);
+
+            var index = Native.Types.Index.CreateFromTempDir(schema._impl);
+            return new Index(index);
+        }
+
+        private static void EnsureSchemaNotNull(Schema.BuiltSchema schema)
+        {
             if (schema == null)
             {
                 throw new ArgumentNullException(nameof(schema));
             }
-
-            var index = Native.Types.Index.CreateInRam(schema._impl);
-            return new Index(index);
         }
 
         public Schema.BuiltSchema Schema => new Schema.BuiltSchema(_impl.Schema);

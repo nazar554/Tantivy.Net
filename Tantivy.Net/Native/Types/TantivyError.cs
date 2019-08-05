@@ -30,6 +30,11 @@
 
         public override string ToString()
         {
+            if (IsInvalid || IsClosed)
+            {
+                throw new ObjectDisposedException(nameof(TantivyError));
+            }
+
             var length = new UIntPtr(MarshalHelper.StackAllocMaxBytes);
             unsafe
             {
