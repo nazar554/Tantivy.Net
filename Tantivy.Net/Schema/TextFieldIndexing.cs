@@ -31,8 +31,6 @@
             set => _impl.IndexRecordOptions = value;
         }
 
-        public bool IsReadOnly => _impl.IsReadOnly;
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)

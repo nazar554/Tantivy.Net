@@ -13,7 +13,6 @@
             {
                 Assert.Equal(DefaultTokenizers.Default, value.Tokenizer);
                 Assert.Equal(IndexRecordOption.Basic, value.IndexRecordOptions);
-                Assert.False(value.IsReadOnly);
                 Assert.Null(value.TextOptions);
             }
         }

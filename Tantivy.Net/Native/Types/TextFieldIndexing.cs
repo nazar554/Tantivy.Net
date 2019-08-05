@@ -11,13 +11,6 @@
         {
         }
 
-        public TextFieldIndexing(IntPtr handle) : base(handle, false)
-        {
-            IsReadOnly = true;
-        }
-
-        public bool IsReadOnly { get; }
-
         protected override bool ReleaseHandle()
         {
             Destroy(handle);

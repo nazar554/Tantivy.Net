@@ -11,29 +11,13 @@
 
         protected override bool ReleaseHandle()
         {
-            if (_cachedIndexingOptions != null)
-            {
-                _cachedIndexingOptions.SetHandleAsInvalid();
-            }
             Destroy(handle);
             return true;
         }
 
-        private TextFieldIndexing _cachedIndexingOptions;
-
         public TextFieldIndexing IndexingOptions
         {
-            get
-            {
-                lock (this)
-                {
-                    if (_cachedIndexingOptions == null)
-                    {
-                        _cachedIndexingOptions = new TextFieldIndexing(GetIndexingOptionsImpl(this));
-                    }
-                    return _cachedIndexingOptions;
-                }
-            }
+            get => GetIndexingOptionsImpl(this);
             set
             {
                 if (value == null)
@@ -43,11 +27,6 @@
                 lock (this)
                 {
                     SetIndexingOptionsImpl(this, value);
-                    if (_cachedIndexingOptions != null)
-                    {
-                        _cachedIndexingOptions.SetHandleAsInvalid();
-                        _cachedIndexingOptions = null;
-                    }
                 }
             }
         }
@@ -73,7 +52,7 @@
         /****************************************************************/
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_text_options_get_indexing_options", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern IntPtr GetIndexingOptionsImpl(TextOptions options);
+        private static extern TextFieldIndexing GetIndexingOptionsImpl(TextOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_text_options_set_indexing_options", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern void SetIndexingOptionsImpl(TextOptions options, TextFieldIndexing indexingOptions);
