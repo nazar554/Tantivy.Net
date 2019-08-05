@@ -6,6 +6,8 @@
 
     internal static class MarshalHelper
     {
+        public const int StackAllocMaxBytes = 100;
+
         public static string ConvertStringSpan(in ReadOnlySpan<byte> span)
         {
             if (span.IsEmpty)
@@ -41,7 +43,7 @@
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            if (count < 100)
+            if (count < StackAllocMaxBytes)
             {
                 Utf8CallStackAlloc(value, count, action);
             }
@@ -106,7 +108,7 @@
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            return count < 100
+            return count < StackAllocMaxBytes
                 ? Utf8CallStackAlloc(value, count, action)
                 : Utf8CallArrayPool(value, count, action, clearArray);
         }

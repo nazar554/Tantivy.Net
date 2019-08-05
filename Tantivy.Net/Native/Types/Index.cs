@@ -13,12 +13,11 @@
 
         public static Index CreateInRam(BuiltSchema schema)
         {
-            lock (schema)
+            if (schema == null)
             {
-                var index = CreateInRamImpl(schema);
-                schema.SetHandleAsInvalid();
-                return index;
+                throw new ArgumentNullException(nameof(schema));
             }
+            return CreateInRamImpl(schema);
         }
 
         public void SetMultithreadExecutor(long numThreads)

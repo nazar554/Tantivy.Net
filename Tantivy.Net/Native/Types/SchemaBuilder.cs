@@ -18,6 +18,7 @@
 
         public uint AddU64Field(string fieldName, IntOptions options)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -29,6 +30,7 @@
 
         public uint AddI64Field(string fieldName, IntOptions options)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -40,6 +42,7 @@
 
         public uint AddDateField(string fieldName, IntOptions options)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -51,6 +54,7 @@
 
         public uint AddFacetField(string fieldName)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -62,6 +66,7 @@
 
         public uint AddBytesField(string fieldName)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -73,6 +78,7 @@
 
         public uint AddTextField(string fieldName, TextOptions options)
         {
+            EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
             {
                 lock (this)
@@ -89,6 +95,14 @@
                 var schema = BuildImpl(this);
                 SetHandleAsInvalid();
                 return schema;
+            }
+        }
+
+        private void EnsureNotClosed()
+        {
+            if (IsClosed)
+            {
+                throw new ObjectDisposedException(nameof(SchemaBuilder));
             }
         }
 
