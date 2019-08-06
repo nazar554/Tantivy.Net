@@ -19,7 +19,7 @@
         public string GetFieldName(uint field)
         {
             var span = GetFieldNameImpl(this, field);
-            return MarshalHelper.ConvertStringSpan(span);
+            return MarshalHelper.ReadUtf8StringSpan(span);
         }
 
         /****************************************************************/

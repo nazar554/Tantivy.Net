@@ -22,17 +22,20 @@
             get
             {
                 var span = GetTokenizer(this);
-                return MarshalHelper.ConvertStringSpan(span);
+                return MarshalHelper.ReadUtf8StringSpan(span);
             }
             set
             {
-                MarshalHelper.Utf8Call(value, (ptr, length) =>
+                unsafe
                 {
-                    lock (this)
+                    MarshalHelper.Utf8Call(value, (buffer, length) =>
                     {
-                        SetTokenizer(this, ptr, length);
-                    }
-                });
+                        lock (this)
+                        {
+                            SetTokenizer(this, buffer, length);
+                        }
+                    });
+                }
             }
         }
 
@@ -67,7 +70,7 @@
         private static extern NativeByteSpan GetTokenizer(TextFieldIndexing handle);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_text_field_indexing_set_tokenizer", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern void SetTokenizer(TextFieldIndexing handle, IntPtr tokenizerName, UIntPtr tokenizerNameLength);
+        private static unsafe extern void SetTokenizer(TextFieldIndexing handle, byte* tokenizerName, UIntPtr tokenizerNameLength);
 
         /****************************************************************/
 

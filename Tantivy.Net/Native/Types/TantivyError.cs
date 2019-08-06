@@ -1,9 +1,7 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
-    using System.Buffers;
     using System.Runtime.InteropServices;
-    using System.Text;
     using Helpers;
 
     internal sealed class TantivyError : Abstract.SafeHandleZeroIsInvalid<TantivyError>
@@ -34,41 +32,11 @@
             {
                 throw new ObjectDisposedException(nameof(TantivyError));
             }
-
-            var length = new UIntPtr(MarshalHelper.StackAllocMaxBytes);
             unsafe
             {
-                // for short error string try stackalloc first
-                var stackBuffer = stackalloc byte[MarshalHelper.StackAllocMaxBytes];
-                GetErrorDisplayStringImpl(this, stackBuffer, ref length);
-                checked
-                {
-                    int byteCount = (int)length;
-
-                    if (byteCount <= MarshalHelper.StackAllocMaxBytes)
-                    {
-                        // we got the entire string
-                        return Encoding.UTF8.GetString(stackBuffer, byteCount);
-                    }
-                    else
-                    {
-                        // we need more memory
-                        var array = ArrayPool<byte>.Shared.Rent(byteCount);
-                        try
-                        {
-                            fixed (byte* buffer = array)
-                            {
-                                // length already contains the actual number of bytes
-                                GetErrorDisplayStringImpl(this, buffer, ref length);
-                            }
-                            return Encoding.UTF8.GetString(array);
-                        }
-                        finally
-                        {
-                            ArrayPool<byte>.Shared.Return(array);
-                        }
-                    }
-                }
+                return MarshalHelper.ReadUtf8String(
+                    (byte* buffer, ref UIntPtr length) => GetErrorDisplayStringImpl(this, buffer, ref length)
+                 );
             }
         }
     }

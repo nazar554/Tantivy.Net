@@ -8,7 +8,50 @@
     {
         public const int StackAllocMaxBytes = 100 * sizeof(int);
 
-        public static string ConvertStringSpan(in ReadOnlySpan<byte> span)
+        public unsafe delegate void Utf8ReadStringAction(byte* buffer, ref UIntPtr length);
+
+        public unsafe delegate void Utf8StringAction(byte* buffer, UIntPtr length);
+
+        public unsafe delegate T Utf8StringFunc<out T>(byte* buffer, UIntPtr length);
+
+        public unsafe static string ReadUtf8String(Utf8ReadStringAction action)
+        {
+            // for short error string try stackalloc first
+            var length = new UIntPtr(StackAllocMaxBytes);
+            var stackBuffer = stackalloc byte[StackAllocMaxBytes];
+            action(stackBuffer, ref length);
+            int byteCount;
+            checked
+            {
+                byteCount = (int)length;
+            }
+
+            if (byteCount <= StackAllocMaxBytes)
+            {
+                // we got the entire string
+                return Encoding.UTF8.GetString(stackBuffer, byteCount);
+            }
+            else
+            {
+                // we need more memory
+                var array = ArrayPool<byte>.Shared.Rent(byteCount);
+                try
+                {
+                    fixed (byte* buffer = array)
+                    {
+                        // length already contains the actual number of bytes
+                        action(buffer, ref length);
+                    }
+                    return Encoding.UTF8.GetString(array);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(array);
+                }
+            }
+        }
+
+        public static string ReadUtf8StringSpan(in ReadOnlySpan<byte> span)
         {
             if (span.IsEmpty)
             {
@@ -24,7 +67,7 @@
             }
         }
 
-        public static void Utf8Call(string value, Action<IntPtr, UIntPtr> action, bool clearArray = false)
+        public static void Utf8Call(string value, Utf8StringAction action, bool clearArray = false)
         {
             if (value == null)
             {
@@ -37,7 +80,10 @@
 
             if (value.Length == 0)
             {
-                action(IntPtr.Zero, UIntPtr.Zero);
+                unsafe
+                {
+                    action(null, UIntPtr.Zero);
+                }
                 return;
             }
 
@@ -45,52 +91,40 @@
 
             if (count < StackAllocMaxBytes)
             {
-                Utf8CallStackAlloc(value, count, action);
+                unsafe
+                {
+                    byte* bytes = stackalloc byte[count];
+                    fixed (char* chars = value)
+                    {
+                        Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
+                    }
+                    action(bytes, new UIntPtr((uint)count));
+                }
             }
             else
             {
-                Utf8CallArrayPool(value, count, action, clearArray);
-            }
-        }
+                byte[] array = ArrayPool<byte>.Shared.Rent(count);
 
-        private static void Utf8CallStackAlloc(string value, int count, Action<IntPtr, UIntPtr> action)
-        {
-            unsafe
-            {
-                byte* bytes = stackalloc byte[count];
-                fixed (char* chars = value)
+                try
                 {
-                    Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
-                }
-                action(new IntPtr(bytes), new UIntPtr((uint)count));
-            }
-        }
+                    Encoding.UTF8.GetBytes(value, 0, value.Length, array, 0);
 
-        private static void Utf8CallArrayPool(string value, int count, Action<IntPtr, UIntPtr> action, bool clearArray)
-        {
-            byte[] array = ArrayPool<byte>.Shared.Rent(count);
-
-            try
-            {
-                unsafe
-                {
-                    fixed (byte* bytes = array)
+                    unsafe
                     {
-                        fixed (char* chars = value)
+                        fixed (byte* bytes = array)
                         {
-                            Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
+                            action(bytes, new UIntPtr((uint)count));
                         }
-                        action(new IntPtr(bytes), new UIntPtr((uint)count));
                     }
                 }
-            }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(array, clearArray);
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(array, clearArray);
+                }
             }
         }
 
-        public static TReturn Utf8Call<TReturn>(string value, Func<IntPtr, UIntPtr, TReturn> action, bool clearArray = false)
+        public static T Utf8Call<T>(string value, Utf8StringFunc<T> action, bool clearArray = false)
         {
             if (value == null)
             {
@@ -103,50 +137,46 @@
 
             if (value.Length == 0)
             {
-                return action(IntPtr.Zero, UIntPtr.Zero);
+                unsafe
+                {
+                    return action(null, UIntPtr.Zero);
+                }
             }
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            return count < StackAllocMaxBytes
-                ? Utf8CallStackAlloc(value, count, action)
-                : Utf8CallArrayPool(value, count, action, clearArray);
-        }
-
-        private static TReturn Utf8CallStackAlloc<TReturn>(string value, int count, Func<IntPtr, UIntPtr, TReturn> action)
-        {
-            unsafe
-            {
-                byte* bytes = stackalloc byte[count];
-                fixed (char* chars = value)
-                {
-                    Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
-                }
-                return action(new IntPtr(bytes), new UIntPtr((uint)count));
-            }
-        }
-
-        private static TReturn Utf8CallArrayPool<TReturn>(string value, int count, Func<IntPtr, UIntPtr, TReturn> action, bool clearArray)
-        {
-            byte[] array = ArrayPool<byte>.Shared.Rent(count);
-
-            try
+            if (count < StackAllocMaxBytes)
             {
                 unsafe
                 {
-                    fixed (byte* bytes = array)
+                    byte* bytes = stackalloc byte[count];
+                    fixed (char* chars = value)
                     {
-                        fixed (char* chars = value)
-                        {
-                            Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
-                        }
-                        return action(new IntPtr(bytes), new UIntPtr((uint)count));
+                        Encoding.UTF8.GetBytes(chars, value.Length, bytes, count);
                     }
+                    return action(bytes, new UIntPtr((uint)count));
                 }
             }
-            finally
+            else
             {
-                ArrayPool<byte>.Shared.Return(array, clearArray);
+                byte[] array = ArrayPool<byte>.Shared.Rent(count);
+
+                try
+                {
+                    Encoding.UTF8.GetBytes(value, 0, value.Length, array, 0);
+
+                    unsafe
+                    {
+                        fixed (byte* bytes = array)
+                        {
+                            return action(bytes, new UIntPtr((uint)count));
+                        }
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(array, clearArray);
+                }
             }
         }
     }

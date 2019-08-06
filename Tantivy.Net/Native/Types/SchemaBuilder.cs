@@ -19,11 +19,14 @@
         public uint AddU64Field(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddU64FieldImpl(this, ptr, length, options);
+                    unsafe
+                    {
+                        return AddU64FieldImpl(this, buffer, length, options);
+                    }
                 }
             });
         }
@@ -31,11 +34,14 @@
         public uint AddI64Field(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddI64FieldImpl(this, ptr, length, options);
+                    unsafe
+                    {
+                        return AddI64FieldImpl(this, buffer, length, options);
+                    }
                 }
             });
         }
@@ -43,11 +49,14 @@
         public uint AddDateField(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddDateFieldImpl(this, ptr, length, options);
+                    unsafe
+                    {
+                        return AddDateFieldImpl(this, buffer, length, options);
+                    }
                 }
             });
         }
@@ -55,11 +64,14 @@
         public uint AddFacetField(string fieldName)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddFacetFieldImpl(this, ptr, length);
+                    unsafe
+                    {
+                        return AddFacetFieldImpl(this, buffer, length);
+                    }
                 }
             });
         }
@@ -67,11 +79,14 @@
         public uint AddBytesField(string fieldName)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddBytesFieldImpl(this, ptr, length);
+                    unsafe
+                    {
+                        return AddBytesFieldImpl(this, buffer, length);
+                    }
                 }
             });
         }
@@ -79,11 +94,14 @@
         public uint AddTextField(string fieldName, TextOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (ptr, length) =>
+            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
                 lock (this)
                 {
-                    return AddTextFieldImpl(this, ptr, length, options);
+                    unsafe
+                    {
+                        return AddTextFieldImpl(this, buffer, length, options);
+                    }
                 }
             });
         }
@@ -117,22 +135,22 @@
         /****************************************************************/
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_u64_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddU64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern unsafe uint AddU64FieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_i64_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddI64FieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern unsafe uint AddI64FieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_date_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddDateFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, IntOptions options);
+        private static extern unsafe uint AddDateFieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength, IntOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_facet_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddFacetFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+        private static extern unsafe uint AddFacetFieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_bytes_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddBytesFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength);
+        private static extern unsafe uint AddBytesFieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_add_text_field", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern uint AddTextFieldImpl(SchemaBuilder builder, IntPtr fieldName, UIntPtr fieldNameLength, TextOptions options);
+        private static extern unsafe uint AddTextFieldImpl(SchemaBuilder builder, byte* fieldName, UIntPtr fieldNameLength, TextOptions options);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_schema_builder_build", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern BuiltSchema BuildImpl(SchemaBuilder builder);

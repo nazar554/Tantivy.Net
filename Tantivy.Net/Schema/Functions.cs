@@ -14,11 +14,14 @@
                 return false;
             }
 
-            return MarshalHelper.Utf8Call(fieldName, IsValidFieldNameImpl);
+            unsafe
+            {
+                return MarshalHelper.Utf8Call(fieldName, IsValidFieldNameImpl);
+            }
         }
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_is_valid_field_name", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         [return: MarshalAs(UnmanagedType.U1)]
-        private static extern bool IsValidFieldNameImpl(IntPtr fieldName, UIntPtr fieldNameLength);
+        private static unsafe extern bool IsValidFieldNameImpl(byte* fieldName, UIntPtr fieldNameLength);
     }
 }

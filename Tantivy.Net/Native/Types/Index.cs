@@ -27,14 +27,17 @@
             {
                 throw new ArgumentNullException(nameof(schema));
             }
-            return MarshalHelper.Utf8Call(path, (ptr, len) =>
+            return MarshalHelper.Utf8Call(path, (buffer, len) =>
             {
-                var index = CreateInDirImpl(ptr, len, schema, out var e);
-                if (index.IsInvalid)
+                unsafe
                 {
-                    throw new TantivyException(e);
+                    var index = CreateInDirImpl(buffer, len, schema, out var e);
+                    if (index.IsInvalid)
+                    {
+                        throw new TantivyException(e);
+                    }
+                    return index;
                 }
-                return index;
             });
         }
 
@@ -133,7 +136,7 @@
         private static extern BuiltSchema SchemaImpl(Index index);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_dir", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern Index CreateInDirImpl(IntPtr path, UIntPtr path_len, BuiltSchema schema, out TantivyError error);
+        private static unsafe extern Index CreateInDirImpl(byte* path, UIntPtr pathLength, BuiltSchema schema, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_writer", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern IndexWriter WriterImpl(Index index, UIntPtr overallHeapSizeInBytes, out TantivyError error);
