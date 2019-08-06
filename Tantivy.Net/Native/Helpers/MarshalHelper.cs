@@ -60,7 +60,7 @@
 
             unsafe
             {
-                fixed (byte* bytes = &span.GetPinnableReference())
+                fixed (byte* bytes = span)
                 {
                     return Encoding.UTF8.GetString(bytes, span.Length);
                 }
