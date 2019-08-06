@@ -1,4 +1,4 @@
-﻿namespace Tantivy.Net.Tests.Schema
+﻿namespace Tantivy.Net.Tests
 {
     using System;
     using System.IO;

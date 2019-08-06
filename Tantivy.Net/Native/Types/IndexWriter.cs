@@ -3,7 +3,7 @@
     using System;
     using System.Runtime.InteropServices;
 
-    internal sealed class IndexWriter : Abstract.SafeHandleZeroIsInvalid<BuiltSchema>
+    internal sealed class IndexWriter : Abstract.SafeHandleZeroIsInvalid<IndexWriter>
     {
         private IndexWriter()
         {
