@@ -43,17 +43,19 @@
             }
         }
 
+        public IndexReader Reader() => new IndexReader(_impl.Reader());
+
+        public IndexWriter Writer(long overallHeapSizeInBytes)
+            => new IndexWriter(_impl.Writer(overallHeapSizeInBytes));
+
+        public IndexWriter Writer(int numThreads, long overallHeapSizeInBytes)
+            => new IndexWriter(_impl.Writer(numThreads, overallHeapSizeInBytes));
+
         public Schema.BuiltSchema Schema => new Schema.BuiltSchema(_impl.Schema);
 
         public void SetDefaultMultithreadExecutor() => _impl.SetDefaultMultithreadExecutor();
 
         public void SetMultithreadExecutor(int numThreads) => _impl.SetMultithreadExecutor(numThreads);
-
-        public void SetMultithreadExecutor(long numThreads) => _impl.SetMultithreadExecutor(numThreads);
-
-        public void SetMultithreadExecutor(uint numThreads) => _impl.SetMultithreadExecutor(numThreads);
-
-        public void SetMultithreadExecutor(ulong numThreads) => _impl.SetMultithreadExecutor(numThreads);
 
         protected override void Dispose(bool disposing)
         {

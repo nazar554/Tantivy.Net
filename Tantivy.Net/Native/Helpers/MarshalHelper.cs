@@ -6,7 +6,7 @@
 
     internal static class MarshalHelper
     {
-        public const int StackAllocMaxBytes = 100;
+        public const int StackAllocMaxBytes = 100 * sizeof(int);
 
         public static string ConvertStringSpan(in ReadOnlySpan<byte> span)
         {

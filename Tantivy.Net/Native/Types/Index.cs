@@ -48,11 +48,44 @@
             return index;
         }
 
-        public void SetMultithreadExecutor(long numThreads)
+        public IndexReader Reader()
+        {
+            var reader = ReaderImpl(this, out var e);
+            if (reader.IsInvalid)
+            {
+                throw new TantivyException(e);
+            }
+            return reader;
+        }
+
+        public IndexWriter Writer(long overallHeapSizeInBytes)
         {
             checked
             {
-                SetMultithreadExecutor(new UIntPtr((ulong)numThreads));
+                var writer = WriterImpl(this, new UIntPtr((ulong)overallHeapSizeInBytes), out var e);
+                if (writer.IsInvalid)
+                {
+                    throw new TantivyException(e);
+                }
+                return writer;
+            }
+        }
+
+        public IndexWriter Writer(int numThreads, long overallHeapSizeInBytes)
+        {
+            checked
+            {
+                var writer = WriterImpl(
+                    this,
+                    new UIntPtr((uint)numThreads),
+                    new UIntPtr((ulong)overallHeapSizeInBytes),
+                    out var e
+                );
+                if (writer.IsInvalid)
+                {
+                    throw new TantivyException(e);
+                }
+                return writer;
             }
         }
 
@@ -60,19 +93,10 @@
         {
             checked
             {
-                SetMultithreadExecutor(new UIntPtr((uint)numThreads));
-            }
-        }
-
-        public void SetMultithreadExecutor(uint numThreads) => SetMultithreadExecutor(new UIntPtr(numThreads));
-
-        public void SetMultithreadExecutor(ulong numThreads) => SetMultithreadExecutor(new UIntPtr(numThreads));
-
-        private void SetMultithreadExecutor(UIntPtr numThreads)
-        {
-            lock (this)
-            {
-                SetMultithreadExecutorImpl(this, numThreads);
+                lock (this)
+                {
+                    SetMultithreadExecutorImpl(this, new UIntPtr((uint)numThreads));
+                }
             }
         }
 
@@ -110,5 +134,14 @@
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_dir", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern Index CreateInDirImpl(IntPtr path, UIntPtr path_len, BuiltSchema schema, out TantivyError error);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_writer", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern IndexWriter WriterImpl(Index index, UIntPtr overallHeapSizeInBytes, out TantivyError error);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_writer_with_num_threads", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern IndexWriter WriterImpl(Index index, UIntPtr numThreads, UIntPtr overallHeapSizeInBytes, out TantivyError error);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_reader", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern IndexReader ReaderImpl(Index index, out TantivyError error);
     }
 }

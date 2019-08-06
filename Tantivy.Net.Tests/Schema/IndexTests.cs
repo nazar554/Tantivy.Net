@@ -11,6 +11,8 @@
         private readonly uint field2;
         private DirectoryInfo indexDirectory;
 
+        private const long DefaultMaxHeapSize = 150 * 1024 * 1024; // 150 MB
+
         public IndexTests()
         {
             using (var builder = new SchemaBuilder())
@@ -32,6 +34,11 @@
                 index.SetDefaultMultithreadExecutor();
                 var indexSchema = index.Schema;
                 Assert.Equal(nameof(field2), indexSchema.GetFieldName(field2));
+
+                var reader = index.Reader();
+                Assert.NotNull(reader);
+                var writer = index.Writer(DefaultMaxHeapSize);
+                Assert.NotNull(writer);
             }
         }
 
