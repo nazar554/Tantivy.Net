@@ -43,6 +43,22 @@
         }
 
         [Fact]
+        public void DefaultsNumThreadsCreateInRamWorks()
+        {
+            using (var index = Index.CreateInRam(schema))
+            {
+                index.SetMultithreadExecutor(4);
+                var indexSchema = index.Schema;
+                Assert.Equal(nameof(field2), indexSchema.GetFieldName(field2));
+
+                var reader = index.Reader();
+                Assert.NotNull(reader);
+                var writer = index.Writer(DefaultMaxHeapSize);
+                Assert.NotNull(writer);
+            }
+        }
+
+        [Fact]
         public void DefaultsCreateInDirWorks()
         {
             using (var index = Index.CreateInDir(indexDirectory.FullName, schema))

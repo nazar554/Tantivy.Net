@@ -1,6 +1,7 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
+    using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Tantivy.Net.Native.Helpers;
     using Tantivy.Net.Schema;
@@ -17,6 +18,7 @@
             return true;
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public string Tokenizer
         {
             get
@@ -39,6 +41,7 @@
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public IndexRecordOption IndexRecordOptions
         {
             get => EnumHelper.VerifyEnum(GetIndexOption(this));

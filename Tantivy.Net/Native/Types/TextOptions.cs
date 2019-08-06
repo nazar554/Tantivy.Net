@@ -1,6 +1,7 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
+    using System.Diagnostics;
     using System.Runtime.InteropServices;
 
     internal sealed class TextOptions : Abstract.SafeHandleZeroIsInvalid<TextOptions>
@@ -15,6 +16,7 @@
             return true;
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public TextFieldIndexing IndexingOptions
         {
             get => GetIndexingOptionsImpl(this);
@@ -31,6 +33,7 @@
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsStored => IsStoredImpl(this);
 
         public void SetStored()

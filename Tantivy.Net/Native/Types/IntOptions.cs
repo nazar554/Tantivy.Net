@@ -1,6 +1,7 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
+    using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Helpers;
     using Schema;
@@ -17,6 +18,7 @@
             return true;
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsStored => IsStoredImpl(this);
 
         public void SetStored()
@@ -27,6 +29,7 @@
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsIndexed => IsIndexedImpl(this);
 
         public void SetIndexed()
@@ -37,6 +40,7 @@
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsFast => IsFastImpl(this);
 
         public void SetFast(Cardinality cardinality)
@@ -52,6 +56,7 @@
             }
         }
 
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public Cardinality? FastFieldCardinality
         {
             get
