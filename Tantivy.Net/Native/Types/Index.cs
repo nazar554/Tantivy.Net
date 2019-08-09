@@ -14,16 +14,27 @@
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public BuiltSchema Schema => SchemaImpl(this);
 
-        public static Index CreateInRam(BuiltSchema schema)
+        public static Index CreateInRam(BuiltSchema schema, bool copy = false)
         {
             if (schema == null)
             {
                 throw new ArgumentNullException(nameof(schema));
             }
-            return CreateInRamImpl(schema);
+
+            Index index;
+            if (copy)
+            {
+                index = CreateInRamCopyImpl(schema);
+            }
+            else
+            {
+                index = CreateInRamMoveImpl(schema);
+                schema.SetHandleAsInvalid();
+            }
+            return index;
         }
 
-        public static Index CreateInDir(string path, BuiltSchema schema)
+        public static Index CreateInDir(string path, BuiltSchema schema, bool copy = false)
         {
             if (schema == null)
             {
@@ -33,7 +44,19 @@
             {
                 unsafe
                 {
-                    var index = CreateInDirImpl(buffer, len, schema, out var e);
+                    Index index;
+                    TantivyError e;
+
+                    if (copy)
+                    {
+                        index = CreateInDirCopyImpl(buffer, len, schema, out e);
+                    }
+                    else
+                    {
+                        index = CreateInDirMoveImpl(buffer, len, schema, out e);
+                        schema.SetHandleAsInvalid();
+                    }
+
                     if (index.IsInvalid)
                     {
                         throw new TantivyException(e);
@@ -43,9 +66,21 @@
             });
         }
 
-        public static Index CreateFromTempDir(BuiltSchema schema)
+        public static Index CreateFromTempDir(BuiltSchema schema, bool copy = false)
         {
-            var index = CreateFromTempDirImpl(schema, out var e);
+            Index index;
+            TantivyError e;
+
+            if (copy)
+            {
+                index = CreateFromTempDirCopyImpl(schema, out e);
+            }
+            else
+            {
+                index = CreateFromTempDirMoveImpl(schema, out e);
+                schema.SetHandleAsInvalid();
+            }
+
             if (index.IsInvalid)
             {
                 throw new TantivyException(e);
@@ -107,11 +142,17 @@
         [DllImport(Constants.DllName, EntryPoint = "tantivy_drop_index", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern void Destroy(IntPtr handle);
 
-        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_ram", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern Index CreateInRamImpl(BuiltSchema schema);
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_ram_copy", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern Index CreateInRamCopyImpl(BuiltSchema schema);
 
-        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_from_tempdir", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern Index CreateFromTempDirImpl(BuiltSchema schema, out TantivyError error);
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_ram_move", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern Index CreateInRamMoveImpl(BuiltSchema schema);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_from_tempdir_copy", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern Index CreateFromTempDirCopyImpl(BuiltSchema schema, out TantivyError error);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_from_tempdir_move", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static extern Index CreateFromTempDirMoveImpl(BuiltSchema schema, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_set_multithread_executor", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern void SetMultithreadExecutorImpl(Index index, UIntPtr numThreads);
@@ -122,8 +163,11 @@
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_schema", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern BuiltSchema SchemaImpl(Index index);
 
-        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_dir", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static unsafe extern Index CreateInDirImpl(byte* path, UIntPtr pathLength, BuiltSchema schema, out TantivyError error);
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_dir_copy", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static unsafe extern Index CreateInDirCopyImpl(byte* path, UIntPtr pathLength, BuiltSchema schema, out TantivyError error);
+
+        [DllImport(Constants.DllName, EntryPoint = "tantivy_index_create_in_dir_move", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
+        private static unsafe extern Index CreateInDirMoveImpl(byte* path, UIntPtr pathLength, BuiltSchema schema, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_writer", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern IndexWriter WriterImpl(Index index, UIntPtr overallHeapSizeInBytes, out TantivyError error);

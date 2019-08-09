@@ -11,6 +11,18 @@
             _impl = impl ?? throw new ArgumentNullException(nameof(impl));
         }
 
+        public ulong AddDocument(Schema.Document document, bool copy = false)
+        {
+            if (document == null)
+            {
+                throw new ArgumentNullException(nameof(document));
+            }
+
+            return _impl.AddDocument(document._impl, copy);
+        }
+
+        public ulong Commit() => _impl.Commit();
+
         protected override void Dispose(bool disposing)
         {
             if (disposing)

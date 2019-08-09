@@ -11,27 +11,27 @@
             _impl = impl ?? throw new ArgumentNullException(nameof(impl));
         }
 
-        public static Index CreateInRam(Schema.BuiltSchema schema)
+        public static Index CreateInRam(Schema.BuiltSchema schema, bool copy = false)
         {
             EnsureSchemaNotNull(schema);
 
-            var index = Native.Types.Index.CreateInRam(schema._impl);
+            var index = Native.Types.Index.CreateInRam(schema._impl, copy);
             return new Index(index);
         }
 
-        public static Index CreateInDir(string path, Schema.BuiltSchema schema)
+        public static Index CreateInDir(string path, Schema.BuiltSchema schema, bool copy = false)
         {
             EnsureSchemaNotNull(schema);
 
-            var index = Native.Types.Index.CreateInDir(path, schema._impl);
+            var index = Native.Types.Index.CreateInDir(path, schema._impl, copy);
             return new Index(index);
         }
 
-        public static Index CreateFromTempDir(Schema.BuiltSchema schema)
+        public static Index CreateFromTempDir(Schema.BuiltSchema schema, bool copy = false)
         {
             EnsureSchemaNotNull(schema);
 
-            var index = Native.Types.Index.CreateFromTempDir(schema._impl);
+            var index = Native.Types.Index.CreateFromTempDir(schema._impl, copy);
             return new Index(index);
         }
 
