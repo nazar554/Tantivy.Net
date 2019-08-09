@@ -4,6 +4,7 @@
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Helpers;
+    using NodaTime;
 
     internal sealed class Document : Abstract.SafeHandleZeroIsInvalid<Document>
     {
@@ -84,10 +85,6 @@
             }
         }
 
-        public void AddDate(uint field, DateTimeOffset date) => AddDate(field, date.ToNanosecondsSinceEpoch());
-
-        public void AddDate(uint field, DateTime date) => AddDate(field, date.ToNanosecondsSinceEpoch());
-
         public void AddBytes(uint field, in ReadOnlySpan<byte> bytes)
         {
             unsafe
@@ -109,13 +106,54 @@
             }
         }
 
-        private void AddDate(uint field, long value)
+        public void AddDate(uint field, ZonedDateTime dateTime)
         {
+            dateTime = dateTime.WithCalendar(CalendarSystem.Iso)
+                               .WithZone(DateTimeZone.Utc);
+
             lock (this)
             {
-                unsafe
+                checked
                 {
-                    AddDateImpl(this, field, value);
+                    const long NanosecondsInSecond = 1_000_000_000;
+                    long totalNanoSeconds = dateTime.NanosecondOfDay;
+                    long seconds = totalNanoSeconds / NanosecondsInSecond;
+                    long nanoseconds = totalNanoSeconds % NanosecondsInSecond;
+
+                    AddDateImpl(
+                        this,
+                        field,
+                        dateTime.Year,
+                        (uint)dateTime.DayOfYear,
+                        (uint)seconds,
+                        (uint)nanoseconds
+                    );
+                }
+            }
+        }
+
+        public void AddDate(uint field, DateTime date)
+        {
+            date = date.ToUniversalTime();
+            lock (this)
+            {
+                checked
+                {
+                    const long NanosecondsInMillisecond = 1_000_000;
+                    const long NanosecondsPerTick = NanosecondsInMillisecond / TimeSpan.TicksPerMillisecond;
+
+                    long ticks = date.TimeOfDay.Ticks;
+                    long seconds = ticks / TimeSpan.TicksPerSecond;
+                    long nanoseconds = ticks % TimeSpan.TicksPerSecond * NanosecondsPerTick;
+
+                    AddDateImpl(
+                        this,
+                        field,
+                        date.Year,
+                        (uint)date.DayOfYear,
+                        (uint)seconds,
+                        (uint)nanoseconds
+                    );
                 }
             }
         }
@@ -150,7 +188,14 @@
         private static extern void AddI64Impl(Document document, uint field, long value);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_document_add_date", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern void AddDateImpl(Document document, uint field, long value);
+        private static extern void AddDateImpl(
+            Document document,
+            uint field,
+            int year,
+            uint ordinal,
+            uint seconds,
+            uint nanoseconds
+         );
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_schema_document_add_bytes", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern unsafe void AddBytesImpl(Document document, uint field, byte* buffer, UIntPtr length);

@@ -1,6 +1,7 @@
 ﻿namespace Tantivy.Net.Schema
 {
     using System;
+    using NodaTime;
 
     public class Document : Abstract.DisposableBase
     {
@@ -25,7 +26,9 @@
 
         public void Add(uint field, DateTime value) => _impl.AddDate(field, value);
 
-        public void Add(uint field, DateTimeOffset value) => _impl.AddDate(field, value);
+        public void Add(uint field, ZonedDateTime value) => _impl.AddDate(field, value);
+
+        public void Add(uint field, DateTimeOffset value) => _impl.AddDate(field, value.UtcDateTime);
 
         public void Add(uint field, ReadOnlySpan<byte> value) => _impl.AddBytes(field, value);
 

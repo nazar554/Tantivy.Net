@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using Tantivy.Net.Schema;
     using Xunit;
+    using NodaTime;
 
     public class DocumentTests
     {
@@ -40,6 +41,14 @@
             yield return new object[] { DateTime.SpecifyKind(futureDate, DateTimeKind.Local) };
             yield return new object[] { DateTime.SpecifyKind(futureDate, DateTimeKind.Unspecified) };
 
+            yield return new object[] { new ZonedDateTime(Instant.MinValue, DateTimeZone.Utc) };
+            yield return new object[] { new ZonedDateTime(Instant.MaxValue, DateTimeZone.Utc) };
+
+            yield return new object[] { DateTime.MinValue };
+            yield return new object[] { DateTime.MaxValue };
+            yield return new object[] { DateTimeOffset.MaxValue };
+            yield return new object[] { DateTimeOffset.MinValue };
+
             yield return new object[] { new DateTimeOffset(pastDate) };
             yield return new object[] { new DateTimeOffset(futureDate) };
             yield return new object[] { new DateTimeOffset(pastDate, offset) };
@@ -47,14 +56,6 @@
 
             yield return new object[] { new byte[] { 0x21, 0x46, 0x15 } };
             yield return new object[] { new byte[0] };
-        }
-
-        public static IEnumerable<object[]> GetInvalidFieldValues()
-        {
-            yield return new object[] { DateTime.MinValue };
-            yield return new object[] { DateTime.MaxValue };
-            yield return new object[] { DateTimeOffset.MaxValue };
-            yield return new object[] { DateTimeOffset.MinValue };
         }
 
         [Theory]
@@ -75,19 +76,5 @@
             }
         }
 
-        [Theory]
-        [MemberData(nameof(GetInvalidFieldValues))]
-        public void ThrowsOnLargeDates(dynamic value)
-        {
-            using (var document = new Document())
-            {
-                Assert.Equal(0, document.Length);
-                Assert.True(document.IsEmpty);
-                Assert.Throws<OverflowException>(() =>
-                {
-                    document.Add(0, value);
-                });
-            }
-        }
     }
 }
