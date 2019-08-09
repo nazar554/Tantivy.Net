@@ -98,11 +98,11 @@
             return reader;
         }
 
-        public IndexWriter Writer(long overallHeapSizeInBytes)
+        public IndexWriter Writer(ulong overallHeapSizeInBytes)
         {
             checked
             {
-                var writer = WriterImpl(this, new UIntPtr((ulong)overallHeapSizeInBytes), out var e);
+                var writer = WriterImpl(this, new UIntPtr(overallHeapSizeInBytes), out var e);
                 if (writer.IsInvalid)
                 {
                     throw new TantivyException(e);
@@ -111,14 +111,14 @@
             }
         }
 
-        public IndexWriter Writer(int numThreads, long overallHeapSizeInBytes)
+        public IndexWriter Writer(uint numThreads, ulong overallHeapSizeInBytes)
         {
             checked
             {
                 var writer = WriterImpl(
                     this,
-                    new UIntPtr((uint)numThreads),
-                    new UIntPtr((ulong)overallHeapSizeInBytes),
+                    new UIntPtr(numThreads),
+                    new UIntPtr(overallHeapSizeInBytes),
                     out var e
                 );
                 if (writer.IsInvalid)
@@ -129,7 +129,7 @@
             }
         }
 
-        public void SetMultithreadExecutor(int numThreads) => SetMultithreadExecutorImpl(this, new UIntPtr((uint)numThreads));
+        public void SetMultithreadExecutor(uint numThreads) => SetMultithreadExecutorImpl(this, new UIntPtr(numThreads));
 
         public void SetDefaultMultithreadExecutor() => SetDefaultMultithreadExecutorImpl(this);
 
