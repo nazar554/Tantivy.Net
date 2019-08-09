@@ -21,12 +21,9 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddU64FieldImpl(this, buffer, length, options);
-                    }
+                    return AddU64FieldImpl(this, buffer, length, options);
                 }
             });
         }
@@ -36,12 +33,9 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddI64FieldImpl(this, buffer, length, options);
-                    }
+                    return AddI64FieldImpl(this, buffer, length, options);
                 }
             });
         }
@@ -51,12 +45,9 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddDateFieldImpl(this, buffer, length, options);
-                    }
+                    return AddDateFieldImpl(this, buffer, length, options);
                 }
             });
         }
@@ -66,12 +57,9 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddFacetFieldImpl(this, buffer, length);
-                    }
+                    return AddFacetFieldImpl(this, buffer, length);
                 }
             });
         }
@@ -81,12 +69,9 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddBytesFieldImpl(this, buffer, length);
-                    }
+                    return AddBytesFieldImpl(this, buffer, length);
                 }
             });
         }
@@ -96,24 +81,18 @@
             EnsureNotClosed();
             return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
             {
-                lock (this)
+                unsafe
                 {
-                    unsafe
-                    {
-                        return AddTextFieldImpl(this, buffer, length, options);
-                    }
+                    return AddTextFieldImpl(this, buffer, length, options);
                 }
             });
         }
 
         public BuiltSchema Build()
         {
-            lock (this)
-            {
-                var schema = BuildImpl(this);
-                SetHandleAsInvalid();
-                return schema;
-            }
+            var schema = BuildImpl(this);
+            SetHandleAsInvalid();
+            return schema;
         }
 
         private void EnsureNotClosed()

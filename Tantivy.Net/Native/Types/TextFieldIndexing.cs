@@ -30,13 +30,7 @@
             {
                 unsafe
                 {
-                    MarshalHelper.Utf8Call(value, (buffer, length) =>
-                    {
-                        lock (this)
-                        {
-                            SetTokenizer(this, buffer, length);
-                        }
-                    });
+                    MarshalHelper.Utf8Call(value, (buffer, length) => SetTokenizer(this, buffer, length));
                 }
             }
         }
@@ -52,10 +46,7 @@
                     throw new ArgumentOutOfRangeException(nameof(value));
                 }
 
-                lock (this)
-                {
-                    SetIndexOption(this, value);
-                }
+                SetIndexOption(this, value);
             }
         }
 

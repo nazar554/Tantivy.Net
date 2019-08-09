@@ -43,64 +43,34 @@
             {
                 throw new ArgumentNullException(nameof(filter));
             }
-            lock (this)
-            {
-                FilterFieldsImpl(this, filter);
-            }
+            FilterFieldsImpl(this, filter);
         }
 
         public void AddText(uint field, string text)
         {
             unsafe
             {
-                MarshalHelper.Utf8Call(text, (buffer, length) =>
-                {
-                    lock (this)
-                    {
-                        AddTextImpl(this, field, buffer, length);
-                    }
-                });
+                MarshalHelper.Utf8Call(text, (buffer, length) => AddTextImpl(this, field, buffer, length));
             }
         }
 
-        public void AddU64(uint field, ulong value)
-        {
-            lock (this)
-            {
-                unsafe
-                {
-                    AddU64Impl(this, field, value);
-                }
-            }
-        }
+        public void AddU64(uint field, ulong value) => AddU64Impl(this, field, value);
 
-        public void AddI64(uint field, long value)
-        {
-            lock (this)
-            {
-                unsafe
-                {
-                    AddI64Impl(this, field, value);
-                }
-            }
-        }
+        public void AddI64(uint field, long value) => AddI64Impl(this, field, value);
 
         public void AddBytes(uint field, in ReadOnlySpan<byte> bytes)
         {
             unsafe
             {
-                lock (this)
+                if (bytes.IsEmpty)
                 {
-                    if (bytes.IsEmpty)
+                    AddBytesImpl(this, field, null, UIntPtr.Zero);
+                }
+                else
+                {
+                    fixed (byte* buffer = bytes)
                     {
-                        AddBytesImpl(this, field, null, UIntPtr.Zero);
-                    }
-                    else
-                    {
-                        fixed (byte* buffer = bytes)
-                        {
-                            AddBytesImpl(this, field, buffer, new UIntPtr((uint)bytes.Length));
-                        }
+                        AddBytesImpl(this, field, buffer, new UIntPtr((uint)bytes.Length));
                     }
                 }
             }
@@ -124,17 +94,14 @@
                 seconds = (uint)(totalNanoSeconds / NanosecondsInSecond);
                 nanoseconds = (uint)(totalNanoSeconds % NanosecondsInSecond);
             }
-            lock (this)
-            {
-                AddDateImpl(
-                    this,
-                    field,
-                    dateTime.Year,
-                    dayOfYear,
-                    seconds,
-                    nanoseconds
-                );
-            }
+            AddDateImpl(
+                this,
+                field,
+                dateTime.Year,
+                dayOfYear,
+                seconds,
+                nanoseconds
+            );
         }
 
         public void AddDate(uint field, DateTime date)
@@ -158,17 +125,14 @@
                 nanoseconds = (uint)(ticks % TimeSpan.TicksPerSecond * NanosecondsPerTick);
             }
 
-            lock (this)
-            {
-                AddDateImpl(
-                        this,
-                        field,
-                        date.Year,
-                        dayOfYear,
-                        seconds,
-                        nanoseconds
-                    );
-            }
+            AddDateImpl(
+                this,
+                field,
+                date.Year,
+                dayOfYear,
+                seconds,
+                nanoseconds
+            );
         }
 
         /****************************************************************/

@@ -21,24 +21,12 @@
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsStored => IsStoredImpl(this);
 
-        public void SetStored()
-        {
-            lock (this)
-            {
-                SetStoredImpl(this);
-            }
-        }
+        public void SetStored() => SetStoredImpl(this);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsIndexed => IsIndexedImpl(this);
 
-        public void SetIndexed()
-        {
-            lock (this)
-            {
-                SetIndexedImpl(this);
-            }
-        }
+        public void SetIndexed() => SetIndexedImpl(this);
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsFast => IsFastImpl(this);
@@ -50,10 +38,7 @@
                 throw new ArgumentOutOfRangeException(nameof(cardinality));
             }
 
-            lock (this)
-            {
-                SetFastImpl(this, (int)cardinality + 1);
-            }
+            SetFastImpl(this, (int)cardinality + 1);
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]

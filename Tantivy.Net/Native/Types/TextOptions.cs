@@ -26,23 +26,14 @@
                 {
                     throw new ArgumentNullException(nameof(value));
                 }
-                lock (this)
-                {
-                    SetIndexingOptionsImpl(this, value);
-                }
+                SetIndexingOptionsImpl(this, value);
             }
         }
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsStored => IsStoredImpl(this);
 
-        public void SetStored()
-        {
-            lock (this)
-            {
-                SetStoredImpl(this);
-            }
-        }
+        public void SetStored() => SetStoredImpl(this);
 
         /****************************************************************/
 

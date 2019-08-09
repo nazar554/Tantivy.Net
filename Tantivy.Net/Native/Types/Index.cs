@@ -94,24 +94,9 @@
             }
         }
 
-        public void SetMultithreadExecutor(int numThreads)
-        {
-            checked
-            {
-                lock (this)
-                {
-                    SetMultithreadExecutorImpl(this, new UIntPtr((uint)numThreads));
-                }
-            }
-        }
+        public void SetMultithreadExecutor(int numThreads) => SetMultithreadExecutorImpl(this, new UIntPtr((uint)numThreads));
 
-        public void SetDefaultMultithreadExecutor()
-        {
-            lock (this)
-            {
-                SetDefaultMultithreadExecutorImpl(this);
-            }
-        }
+        public void SetDefaultMultithreadExecutor() => SetDefaultMultithreadExecutorImpl(this);
 
         protected override bool ReleaseHandle()
         {
