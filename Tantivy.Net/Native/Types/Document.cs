@@ -111,50 +111,63 @@
             dateTime = dateTime.WithCalendar(CalendarSystem.Iso)
                                .WithZone(DateTimeZone.Utc);
 
+            long totalNanoSeconds = dateTime.NanosecondOfDay;
+            uint dayOfYear;
+            uint seconds;
+            uint nanoseconds;
+#if DEBUG
+            checked
+#endif
+            {
+                const long NanosecondsInSecond = 1_000_000_000;
+                dayOfYear = (uint)dateTime.DayOfYear;
+                seconds = (uint)(totalNanoSeconds / NanosecondsInSecond);
+                nanoseconds = (uint)(totalNanoSeconds % NanosecondsInSecond);
+            }
             lock (this)
             {
-                checked
-                {
-                    const long NanosecondsInSecond = 1_000_000_000;
-                    long totalNanoSeconds = dateTime.NanosecondOfDay;
-                    long seconds = totalNanoSeconds / NanosecondsInSecond;
-                    long nanoseconds = totalNanoSeconds % NanosecondsInSecond;
-
-                    AddDateImpl(
-                        this,
-                        field,
-                        dateTime.Year,
-                        (uint)dateTime.DayOfYear,
-                        (uint)seconds,
-                        (uint)nanoseconds
-                    );
-                }
+                AddDateImpl(
+                    this,
+                    field,
+                    dateTime.Year,
+                    dayOfYear,
+                    seconds,
+                    nanoseconds
+                );
             }
         }
 
         public void AddDate(uint field, DateTime date)
         {
             date = date.ToUniversalTime();
+            long ticks = date.TimeOfDay.Ticks;
+
+            uint dayOfYear;
+            uint seconds;
+            uint nanoseconds;
+
+#if DEBUG
+            checked
+#endif
+            {
+                dayOfYear = (uint)date.DayOfYear;
+
+                const long NanosecondsInMillisecond = 1_000_000;
+                const long NanosecondsPerTick = NanosecondsInMillisecond / TimeSpan.TicksPerMillisecond;
+                seconds = (uint)(ticks / TimeSpan.TicksPerSecond);
+                nanoseconds = (uint)(ticks % TimeSpan.TicksPerSecond * NanosecondsPerTick);
+            }
+
             lock (this)
             {
-                checked
-                {
-                    const long NanosecondsInMillisecond = 1_000_000;
-                    const long NanosecondsPerTick = NanosecondsInMillisecond / TimeSpan.TicksPerMillisecond;
-
-                    long ticks = date.TimeOfDay.Ticks;
-                    long seconds = ticks / TimeSpan.TicksPerSecond;
-                    long nanoseconds = ticks % TimeSpan.TicksPerSecond * NanosecondsPerTick;
-
-                    AddDateImpl(
+                AddDateImpl(
                         this,
                         field,
                         date.Year,
-                        (uint)date.DayOfYear,
-                        (uint)seconds,
-                        (uint)nanoseconds
+                        dayOfYear,
+                        seconds,
+                        nanoseconds
                     );
-                }
             }
         }
 
