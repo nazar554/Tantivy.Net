@@ -2,9 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using NodaTime;
     using Tantivy.Net.Schema;
     using Xunit;
-    using NodaTime;
 
     public class DocumentTests
     {
@@ -33,7 +33,7 @@
 
             var offset = new TimeSpan(3, 0, 0);
 
-            yield return new object[] { DateTime.SpecifyKind(pastDate, DateTimeKind.Utc)};
+            yield return new object[] { DateTime.SpecifyKind(pastDate, DateTimeKind.Utc) };
             yield return new object[] { DateTime.SpecifyKind(pastDate, DateTimeKind.Local) };
             yield return new object[] { DateTime.SpecifyKind(pastDate, DateTimeKind.Unspecified) };
 
@@ -76,5 +76,20 @@
             }
         }
 
+        [Fact]
+        public void FilterWorks()
+        {
+            using (var document = new Document())
+            {
+                const int NumFields = 10;
+                for (uint i = 0; i < NumFields; ++i)
+                {
+                    document.Add(i, i);
+                }
+                document.FilterFields(i => i % 2 == 0);
+                Assert.False(document.IsEmpty);
+                Assert.Equal(NumFields / 2, document.Length);
+            }
+        }
     }
 }
