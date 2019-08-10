@@ -38,7 +38,7 @@
 
         public void Add(uint field, DateTimeOffset value) => _impl.AddDate(field, value.UtcDateTime);
 
-        public void Add(uint field, ReadOnlySpan<byte> value) => _impl.AddBytes(field, value);
+        public void Add(uint field, in ReadOnlySpan<byte> value) => _impl.AddBytes(field, value);
 
         public void Add(uint field, byte[] value) => _impl.AddBytes(field, value);
 

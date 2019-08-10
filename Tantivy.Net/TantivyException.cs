@@ -25,6 +25,12 @@
             error.Dispose();
         }
 
+        internal TantivyException(QueryParserError error) :
+            base(error != null ? error.ToString() : throw new ArgumentNullException(nameof(error)))
+        {
+            error.Dispose();
+        }
+
         protected TantivyException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }

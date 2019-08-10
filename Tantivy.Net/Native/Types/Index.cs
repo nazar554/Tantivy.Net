@@ -5,7 +5,7 @@
     using System.Runtime.InteropServices;
     using Helpers;
 
-    internal sealed class Index : Abstract.SafeHandleZeroIsInvalid<BuiltSchema>
+    internal sealed class Index : Abstract.SafeHandleZeroIsInvalid<Index>
     {
         private Index()
         {

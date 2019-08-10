@@ -11,6 +11,8 @@
             _impl = impl ?? throw new ArgumentNullException(nameof(impl));
         }
 
+        public Searcher Searcher() => new Searcher(_impl.Searcher());
+
         public void Dispose() => _impl.Dispose();
     }
 }
