@@ -3,7 +3,7 @@
     using System;
     using NodaTime;
 
-    public class Document : Abstract.DisposableBase
+    public sealed class Document : IDisposable
     {
         internal readonly Native.Types.Document _impl;
 
@@ -42,12 +42,6 @@
 
         public void Add(uint field, byte[] value) => _impl.AddBytes(field, value);
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

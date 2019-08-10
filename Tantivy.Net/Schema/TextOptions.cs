@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class TextOptions : Abstract.DisposableBase
+    public sealed class TextOptions : IDisposable
     {
         internal readonly Native.Types.TextOptions _impl;
 
@@ -36,12 +36,6 @@
             return this;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

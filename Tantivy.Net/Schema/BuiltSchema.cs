@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class BuiltSchema : Abstract.DisposableBase
+    public sealed class BuiltSchema : IDisposable
     {
         internal readonly Native.Types.BuiltSchema _impl;
 
@@ -13,12 +13,6 @@
 
         public string GetFieldName(uint field) => _impl.GetFieldName(field);
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

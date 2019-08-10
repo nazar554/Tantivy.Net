@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class TextFieldIndexing : Abstract.DisposableBase
+    public sealed class TextFieldIndexing : IDisposable
     {
         internal readonly Native.Types.TextFieldIndexing _impl;
 
@@ -31,12 +31,6 @@
             set => _impl.IndexRecordOptions = value;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

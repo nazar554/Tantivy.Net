@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class IndexWriter : Abstract.DisposableBase
+    public sealed class IndexWriter : IDisposable
     {
         internal Native.Types.IndexWriter _impl;
 
@@ -23,12 +23,6 @@
 
         public ulong Commit() => _impl.Commit();
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

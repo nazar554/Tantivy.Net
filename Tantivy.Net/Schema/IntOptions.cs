@@ -1,6 +1,8 @@
 ﻿namespace Tantivy.Net.Schema
 {
-    public class IntOptions : Abstract.DisposableBase
+    using System;
+
+    public sealed class IntOptions : IDisposable
     {
         internal readonly Native.Types.IntOptions _impl;
 
@@ -35,13 +37,7 @@
             return this;
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
 
         public override int GetHashCode() => _impl.GetHashCode();
 

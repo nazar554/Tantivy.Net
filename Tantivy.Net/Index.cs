@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class Index : Abstract.DisposableBase
+    public sealed class Index : IDisposable
     {
         internal Native.Types.Index _impl;
 
@@ -57,12 +57,6 @@
 
         public void SetMultithreadExecutor(uint numThreads) => _impl.SetMultithreadExecutor(numThreads);
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

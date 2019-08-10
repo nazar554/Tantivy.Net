@@ -2,7 +2,7 @@
 {
     using System;
 
-    public class IndexReader : Abstract.DisposableBase
+    public sealed class IndexReader : IDisposable
     {
         internal Native.Types.IndexReader _impl;
 
@@ -11,12 +11,6 @@
             _impl = impl ?? throw new ArgumentNullException(nameof(impl));
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }

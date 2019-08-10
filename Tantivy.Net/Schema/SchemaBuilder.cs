@@ -1,6 +1,8 @@
 ﻿namespace Tantivy.Net.Schema
 {
-    public class SchemaBuilder : Abstract.DisposableBase
+    using System;
+
+    public sealed class SchemaBuilder : IDisposable
     {
         internal readonly Native.Types.SchemaBuilder _impl;
 
@@ -45,12 +47,6 @@
             return new BuiltSchema(schema);
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _impl.Dispose();
-            }
-        }
+        public void Dispose() => _impl.Dispose();
     }
 }
