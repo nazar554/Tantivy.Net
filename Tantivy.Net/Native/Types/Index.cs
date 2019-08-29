@@ -1,7 +1,6 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
-    using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Helpers;
 
@@ -11,7 +10,6 @@
         {
         }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public BuiltSchema Schema => SchemaImpl(this);
 
         public static Index CreateInRam(BuiltSchema schema, bool copy = false)

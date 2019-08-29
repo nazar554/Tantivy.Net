@@ -1,7 +1,6 @@
 ﻿namespace Tantivy.Net.Native.Types
 {
     using System;
-    using System.Diagnostics;
     using System.Runtime.InteropServices;
     using Helpers;
     using NodaTime;
@@ -18,7 +17,6 @@
             return true;
         }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public int Length
         {
             get
@@ -30,7 +28,6 @@
             }
         }
 
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         public bool IsEmpty => IsEmptyImpl(this);
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
