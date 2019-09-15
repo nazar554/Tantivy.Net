@@ -89,7 +89,7 @@
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            if (count < StackAllocMaxBytes)
+            if (count <= StackAllocMaxBytes)
             {
                 unsafe
                 {
@@ -145,7 +145,7 @@
 
             int count = Encoding.UTF8.GetByteCount(value);
 
-            if (count < StackAllocMaxBytes)
+            if (count <= StackAllocMaxBytes)
             {
                 unsafe
                 {

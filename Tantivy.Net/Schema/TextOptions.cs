@@ -30,7 +30,7 @@
 
         public bool IsStored => _impl.IsStored;
 
-        public TextOptions SetStored()
+        public TextOptions Stored()
         {
             _impl.SetStored();
             return this;
