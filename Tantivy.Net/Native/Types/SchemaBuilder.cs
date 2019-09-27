@@ -19,73 +19,55 @@
         public uint AddU64Field(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddU64FieldImpl(this, buffer, length, options);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddU64FieldImpl(this, buffer, length, options));
+            }
         }
 
         public uint AddI64Field(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddI64FieldImpl(this, buffer, length, options);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddI64FieldImpl(this, buffer, length, options));
+            }
         }
 
         public uint AddDateField(string fieldName, IntOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddDateFieldImpl(this, buffer, length, options);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddDateFieldImpl(this, buffer, length, options));
+            }
         }
 
         public uint AddFacetField(string fieldName)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddFacetFieldImpl(this, buffer, length);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddFacetFieldImpl(this, buffer, length));
+            }
         }
 
         public uint AddBytesField(string fieldName)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddBytesFieldImpl(this, buffer, length);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddBytesFieldImpl(this, buffer, length));
+            }
         }
 
         public uint AddTextField(string fieldName, TextOptions options)
         {
             EnsureNotClosed();
-            return MarshalHelper.Utf8Call(fieldName, (buffer, length) =>
+            unsafe
             {
-                unsafe
-                {
-                    return AddTextFieldImpl(this, buffer, length, options);
-                }
-            });
+                return MarshalHelper.Utf8Call(fieldName, (buffer, length) => AddTextFieldImpl(this, buffer, length, options));
+            }
         }
 
         public BuiltSchema Build()

@@ -5,6 +5,8 @@
     using Tantivy.Net.Schema;
     using Xunit;
 
+    using TantivyIndex = Index;
+
     public class IndexTests : IDisposable
     {
         private readonly BuiltSchema schema;
@@ -29,7 +31,7 @@
         [Fact]
         public void DefaultsCreateInRamWorks()
         {
-            using (var index = Index.CreateInRam(schema))
+            using (var index = TantivyIndex.CreateInRam(schema))
             {
                 index.SetDefaultMultithreadExecutor();
                 var indexSchema = index.Schema;
@@ -45,7 +47,7 @@
         [Fact]
         public void DefaultsNumThreadsCreateInRamWorks()
         {
-            using (var index = Index.CreateInRam(schema))
+            using (var index = TantivyIndex.CreateInRam(schema))
             {
                 index.SetMultithreadExecutor(4);
                 var indexSchema = index.Schema;
@@ -61,7 +63,7 @@
         [Fact]
         public void DefaultsCreateInDirWorks()
         {
-            using (var index = Index.CreateInDir(indexDirectory.FullName, schema))
+            using (var index = TantivyIndex.CreateInDir(indexDirectory.FullName, schema))
             {
                 index.SetDefaultMultithreadExecutor();
                 var indexSchema = index.Schema;
@@ -76,13 +78,13 @@
             indexDirectory.Delete();
             indexDirectory = null;
 
-            Assert.Throws<TantivyException>(() => Index.CreateInDir(path, schema));
+            Assert.Throws<TantivyException>(() => TantivyIndex.CreateInDir(path, schema));
         }
 
         [Fact]
         public void DefaultsCreateFromTempDirWorks()
         {
-            using (var index = Index.CreateFromTempDir(schema))
+            using (var index = TantivyIndex.CreateFromTempDir(schema))
             {
                 index.SetDefaultMultithreadExecutor();
                 var indexSchema = index.Schema;

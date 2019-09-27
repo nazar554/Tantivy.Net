@@ -38,30 +38,32 @@
             {
                 throw new ArgumentNullException(nameof(schema));
             }
-            return MarshalHelper.Utf8Call(path, (buffer, len) =>
+            unsafe
             {
-                unsafe
+                return MarshalHelper.Utf8Call(path, (buffer, len) =>
                 {
-                    Index index;
-                    TantivyError e;
+                    {
+                        Index index;
+                        TantivyError e;
 
-                    if (copy)
-                    {
-                        index = CreateInDirCopyImpl(buffer, len, schema, out e);
-                    }
-                    else
-                    {
-                        index = CreateInDirMoveImpl(buffer, len, schema, out e);
-                        schema.SetHandleAsInvalid();
-                    }
+                        if (copy)
+                        {
+                            index = CreateInDirCopyImpl(buffer, len, schema, out e);
+                        }
+                        else
+                        {
+                            index = CreateInDirMoveImpl(buffer, len, schema, out e);
+                            schema.SetHandleAsInvalid();
+                        }
 
-                    if (index.IsInvalid)
-                    {
-                        throw new TantivyException(e);
+                        if (index.IsInvalid)
+                        {
+                            throw new TantivyException(e);
+                        }
+                        return index;
                     }
-                    return index;
-                }
-            });
+                });
+            }
         }
 
         public static Index CreateFromTempDir(BuiltSchema schema, bool copy = false)

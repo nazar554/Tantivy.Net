@@ -5,11 +5,13 @@
     using Tantivy.Net.Tokenizer;
     using Xunit;
 
+    using TantivyIndex = Index;
+
     public class IndexWriterTests : IDisposable
     {
         private const ulong HeapSize = 128 * 1024 * 1024;
 
-        private readonly Index Index;
+        private readonly TantivyIndex Index;
         private readonly uint Id;
         private readonly uint Text;
 
@@ -28,7 +30,7 @@
                     Text = builder.AddTextField(nameof(Text), textOptions);
                 }
 
-                Index = Index.CreateInRam(builder.Build());
+                Index = TantivyIndex.CreateInRam(builder.Build());
             }
         }
 
