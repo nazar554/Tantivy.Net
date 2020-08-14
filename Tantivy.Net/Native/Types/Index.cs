@@ -129,9 +129,23 @@
             }
         }
 
-        public void SetMultithreadExecutor(uint numThreads) => SetMultithreadExecutorImpl(this, new UIntPtr(numThreads));
+        public void SetMultithreadExecutor(uint numThreads)
+        {
+            SetMultithreadExecutorImpl(this, new UIntPtr(numThreads), out var e);
+            if (!e.IsInvalid)
+            {
+                throw new TantivyException(e);
+            }
+        }
 
-        public void SetDefaultMultithreadExecutor() => SetDefaultMultithreadExecutorImpl(this);
+        public void SetDefaultMultithreadExecutor()
+        {
+            SetDefaultMultithreadExecutorImpl(this, out var e);
+            if (!e.IsInvalid)
+            {
+                throw new TantivyException(e);
+            }
+        }
 
         protected override bool ReleaseHandle()
         {
@@ -155,10 +169,10 @@
         private static extern Index CreateFromTempDirMoveImpl(BuiltSchema schema, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_set_multithread_executor", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern void SetMultithreadExecutorImpl(Index index, UIntPtr numThreads);
+        private static extern void SetMultithreadExecutorImpl(Index index, UIntPtr numThreads, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_set_default_multithread_executor", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
-        private static extern void SetDefaultMultithreadExecutorImpl(Index index);
+        private static extern void SetDefaultMultithreadExecutorImpl(Index index, out TantivyError error);
 
         [DllImport(Constants.DllName, EntryPoint = "tantivy_index_schema", CallingConvention = CallingConvention.Cdecl, ExactSpelling = true)]
         private static extern BuiltSchema SchemaImpl(Index index);
